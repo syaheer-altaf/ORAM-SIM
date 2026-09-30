@@ -7,7 +7,7 @@ The purpose of this project is to analyze a variant of Path ORAM with non-unifor
 Simply run the following command on terminal
 
 ```bash
-make compiled
+make compile
 ```
 
 The corresponding executables will be located at `./compiled`. These executables are experiments to run and subsequently used for analyses. The current state of the project does not support a friendlier pipeline; users are expected to change the parameters accordingly -- especially the number of accesses to ORAM -- before compilation. Then run, for example,
