@@ -1,12 +1,14 @@
-.PHONY: exp1 exp2
+.PHONY: all exp1 exp2 clear
 
-exp1: | compile
+all: exp1 exp2
+
+exp1: | compiled
 	g++ -O2 -std=c++17 ./experiments/experiment_1.cpp -o compiled/experiment_1
 
-exp2: | compile
+exp2: | compiled
 	g++ -O2 -std=c++17 ./experiments/experiment_2.cpp -o compiled/experiment_2
 
-compile:
+compiled:
 	mkdir -p compiled
 
 clear:
