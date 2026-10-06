@@ -3,7 +3,7 @@
 ** Path ORAM tree to Z=1 while the rest is still 4.
 ** For height L, let
 ** Z(d) = 4 if 0 <= d <= L-k
-** Z(d) = 1 if L-k+1 <= d <= L,
+** Z(d) = 0 if L-k+1 <= d <= L,
 ** where d refers to depth and k is a fixed integer.
 */
 
@@ -67,11 +67,11 @@ int main() {
 
     if (need_header)
         csv << "L,k,T_warm,T_meas,max_stash,mean_stash,std_stash,invariant\n";
-    std::vector<u32> heights = {16,17,18,19,20};
-    std::vector<u32> thres_k = {7,6,5,4,3};
+    std::vector<u32> heights = {15,16,17,18,19,20};
+    std::vector<u32> thres_k = {0,1,2,3,4};
     for (const auto& L : heights) {
         for (const auto& k : thres_k) {
-            ORAM o; init(o, L, [L, k](u32 level) {return level <= L-k ? 4u : 1u;});
+            ORAM o; init(o, L, [L, k](u32 level) {return level <= L-k ? 4u : 0u;});
             std::cout << "init done, invariant " << (check_invariant(o) ? "OK" : "BROKEN") << ", stash " << o.stash.size() << "\n";
             run_experiemnt(o, csv, L, k);
         }

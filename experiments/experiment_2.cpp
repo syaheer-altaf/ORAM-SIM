@@ -1,6 +1,6 @@
 /*
 ** This experiment matches with the objective of experiment 1
-** but by fixing L and k=4, we let Z(L-k) = {1,2,3,4},
+** but by fixing L and k=2, we let Z(L-k) = {1,2,3,4},
 ** and the rule is same for other depths.
 */
 
@@ -65,12 +65,12 @@ int main() {
     if (need_header)
         csv << "L,k,c,T_warm,T_meas,max_stash,mean_stash,std_stash,invariant\n";
     u32 L = 20;
-    u32 k = 4;
+    u32 k = 2;
     std::vector<u32> c_list = {1,2,3,4};
     for (const auto& c : c_list) {
         ORAM o; init(o, L, [L, k, c](u32 level) {
             if (level == L-k) return c;
-            return level < L-k ? 4u : 1u;
+            return level < L-k ? 4u : 0u;
         });
         std::cout << "init done, invariant " << (check_invariant(o) ? "OK" : "BROKEN") << ", stash " << o.stash.size() << "\n";
         run_experiemnt(o, csv, L, k, c);
