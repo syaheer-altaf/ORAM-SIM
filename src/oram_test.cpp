@@ -1,8 +1,42 @@
 #include "path_oram.cpp"
+#include <cstdint>
+#include <iostream>
 
 using namespace path_oram;
+
 int main() {
+    constexpr std::uint64_t T_meas = 1000000;
+    constexpr u32 L = 15;
+    constexpr u32 Z = 2;
+    constexpr double kappa = 2.60;
+    // run Path ORAM access (stash size is bad for Z=2)
+    std::cout << "\nRunning Path ORAM access...\n";
     ORAM o;
-    init(o, 15, 4);
-    std::cout << "init done, invariant " << (check_invariant(o) ? "OK" : "BROKEN") << ", stash " << o.stash.size() << "\n";
+    init(o, L, Z);
+    std::cout << "init done, invariant "
+              << (check_invariant(o) ? "OK" : "BROKEN")
+              << ", L = " << L << ", Z = " << Z
+              << ", stash size = " << o.stash.size() << '\n';
+    u32 idx = 0;
+    for (std::uint64_t t = 0; t < T_meas; ++t)
+        access(o, idx++ % (1u << L));
+    std::cout << "stash size: " << o.stash.size() << " <--- this is bad\n";
+    std::cout << "bandwidth = " << o.buckets_touched * Z << " blocks\n";
+    std::cout << "\ninvariant: " << (check_invariant(o) ? "OK" : "BROKEN") << '\n';
+
+    // run Path ORAM with modified BatchAccess
+    std::cout << "\nContinuing with modified BatchAccess...\n";
+    o = ORAM{};  // release old memory and reset the struct
+    init(o, L, Z);
+    std::cout << "init done, invariant "
+              << (check_invariant(o) ? "OK" : "BROKEN")
+              << ", L = " << L << ", Z = " << Z
+              << ", stash size = " << o.stash.size() << '\n';
+    for (std::uint64_t t = 0; t < T_meas; ++t)
+        mod_batch_access(o, {idx++ % (1u << L)}, kappa);
+    std::cout << "stash size: " << o.stash.size() << " <--- this should be okay\n";
+    std::cout << "bandwidth = " << o.buckets_touched * Z << " blocks\n";
+    std::cout << "\ninvariant: " << (check_invariant(o) ? "OK" : "BROKEN") << '\n';
+
+    return 0;
 }
