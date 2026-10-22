@@ -20,12 +20,13 @@ int main() {
     u32 idx = 0;
     for (std::uint64_t t = 0; t < T_meas; ++t)
         access(o, idx++ % (1u << L));
-    std::cout << "stash size: " << o.stash.size() << " <--- this is bad\n";
-    std::cout << "bandwidth = " << o.buckets_touched * Z << " blocks\n";
-    std::cout << "\ninvariant: " << (check_invariant(o) ? "OK" : "BROKEN") << '\n';
+    std::cout << "\t- bandwidth = " << o.buckets_touched * Z << " blocks\n";
+    std::cout << "\t- avg bandwidth = " << (o.buckets_touched * Z) / T_meas << " blocks\n";
+    std::cout << "\t- invariant: " << (check_invariant(o) ? "OK" : "BROKEN") << '\n';
+    std::cout << "\t- final stash size: " << o.stash.size() << " <--- this is bad\n";
 
     // run Path ORAM with modified BatchAccess
-    std::cout << "\nContinuing with modified BatchAccess...\n";
+    std::cout << "\nRunning with modified BatchAccess...\n";
     o = ORAM{};  // release old memory and reset the struct
     init(o, L, Z);
     std::cout << "init done, invariant "
@@ -34,9 +35,10 @@ int main() {
               << ", stash size = " << o.stash.size() << '\n';
     for (std::uint64_t t = 0; t < T_meas; ++t)
         mod_batch_access(o, {idx++ % (1u << L)}, kappa);
-    std::cout << "stash size: " << o.stash.size() << " <--- this should be okay\n";
-    std::cout << "bandwidth = " << o.buckets_touched * Z << " blocks\n";
-    std::cout << "\ninvariant: " << (check_invariant(o) ? "OK" : "BROKEN") << '\n';
+    std::cout << "\t- bandwidth = " << o.buckets_touched * Z << " blocks\n";
+    std::cout << "\t- avg bandwidth = " << (o.buckets_touched * Z) / T_meas << " blocks\n";
+    std::cout << "\t- invariant: " << (check_invariant(o) ? "OK" : "BROKEN") << '\n';
+    std::cout << "\t- final stash size: " << o.stash.size() << " <--- this should be okay\n";
 
     return 0;
 }
