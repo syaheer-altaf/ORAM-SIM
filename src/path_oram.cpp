@@ -185,7 +185,7 @@ namespace path_oram {
 
         write_path(o, x);
 
-        o.max_stash = std::max(o.max_stash, o.stash.size());
+        // o.max_stash = std::max(o.max_stash, o.stash.size());
         ++o.accesses;
         ++o.logical_reads;
         o.buckets_touched += o.L + 1;
@@ -342,7 +342,7 @@ namespace path_oram {
         for (u32 v : U)
             o.in_U[v] = 0;
 
-        o.max_stash = std::max(o.max_stash, o.stash.size());
+        // o.max_stash = std::max(o.max_stash, o.stash.size());
         ++o.accesses;
         o.logical_reads += m;
         o.buckets_touched += U.size();
